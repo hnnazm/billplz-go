@@ -49,3 +49,22 @@ func CreateBill(data models.Bill) (models.BillResponse, models.Error) {
 
 	return k, err1
 }
+
+func GetTransactionIndex(billId string) (models.TransactionResponse, models.Error) {
+	client := &http.Client{}
+
+	url := fmt.Sprintf(URL+"/api/v3/bills/%s/transactions", billId)
+
+	req, _ := http.NewRequest("GET", url, nil)
+	req.SetBasicAuth(APIKEY, "")
+
+	resp, _ := client.Do(req)
+	body, err := ioutil.ReadAll(resp.Body)
+
+	obj, err1 := response(body, err, "transaction")
+	objString, _ := json.Marshal(obj)
+	k := models.TransactionResponse{}
+	json.Unmarshal(objString, &k)
+
+	return k, err1
+}
